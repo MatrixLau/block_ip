@@ -50,7 +50,7 @@ block_ipset(){
 
     if [ ! -f "/tmp/$GEOIP.zone" ]; then
         echo -e "${Green}IPv4 IPs data下载失败，请检查网络连接！${Font}"
-        echo -e "${Green}代码查看地址：http://www.ipdeny.com/ipblocks/data/countries/${Font}"
+        echo -e "${Green}代码查看地址：https://www.ipdeny.com/ipblocks/${Font}"
         exit 1
     fi
     echo -e "${Green}IPv4 IPs data下载成功！${Font}"

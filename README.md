@@ -32,7 +32,7 @@
 
 您可以通过修改脚本顶部的变量来配置要封禁的国家和端口：
 
--   `GEOIP`: 指定要封禁的国家代码。默认为 "cn" (中国)。您可以在 [http://www.ipdeny.com/ipblocks/data/countries/](http://www.ipdeny.com/ipblocks/data/countries/) 找到其他国家代码。
+-   `GEOIP`: 指定要封禁的国家代码。默认为 "cn" (中国)。您可以在 [https://www.ipdeny.com/ipblocks/](https://www.ipdeny.com/ipblocks/) 找到其他国家代码。
 -   `BLOCKED_PORTS`: 指定要封禁的端口。支持单个端口（如 "22"）、多个端口（如 "22,80,443"）以及端口范围（如 "10000:11000"），也可以混合使用（如 "22,80,443,10000:11000"）。默认为 "1024:65535"。
 
 **示例：**
@@ -43,6 +43,45 @@
 GEOIP="us"
 BLOCKED_PORTS="80,443"
 ```
+
+## 开机自启 (Systemd)
+
+为了让脚本在系统启动时自动运行，您可以创建一个 systemd 服务。
+
+1.  创建服务文件：
+    ```bash
+    sudo nano /etc/systemd/system/block-ip.service
+    ```
+
+2.  将以下内容写入服务文件并保存：
+    ```
+    [Unit]
+    Description=Block IPs Service
+    After=network.target
+
+    [Service]
+    Type=oneshot
+    ExecStart=/usr/local/bin/block_ip.sh
+    RemainAfterExit=yes
+
+    [Install]
+    WantedBy=multi-user.target
+    ```
+
+3.  重新加载 systemd 管理器配置：
+    ```bash
+    sudo systemctl daemon-reload
+    ```
+
+4.  启用服务，使其在开机时启动：
+    ```bash
+    sudo systemctl enable block-ip.service
+    ```
+
+5.  立即启动服务：
+    ```bash
+    sudo systemctl start block-ip.service
+    ```
 
 ## 注意事项
 
