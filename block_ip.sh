@@ -21,11 +21,19 @@ check_ipset() {
             apt-get update
             apt-get install -y ipset
         elif command -v yum &> /dev/null; then
+            yum update
             yum install -y ipset
         elif command -v dnf &> /dev/null; then
+            dnf update
             dnf install -y ipset
         elif command -v apk &> /dev/null; then
+            apk update
             apk add ipset
+        elif command -v zypper &> /dev/null; then
+            zypper update
+            zypper install -y ipset
+        elif command -v pacman &> /dev/null; then
+            pacman -Sy --noconfirm ipset
         else
             echo -e "${Green}无法自动安装 ipset。请手动安装 ipset 后再运行脚本。${Font}"
             exit 1
