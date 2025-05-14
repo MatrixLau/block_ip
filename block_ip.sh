@@ -51,7 +51,7 @@ block_ipset(){
     wget -P /tmp $GEOIP_IPV6_URL -O /tmp/$GEOIP-ipv6.zone 2> /dev/null
 
     IPV6_DOWNLOAD_SUCCESS=false
-    if [ -f "/tmp/$GEOIP-ipv6.zone" ]; then # Corrected check for IPv6 file
+    if [ -f "/tmp/$GEOIP-ipv6.zone" ]; then
         echo -e "${Green}IPv6 IPs data下载成功！${Font}"
         IPV6_DOWNLOAD_SUCCESS=true
     else
