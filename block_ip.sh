@@ -6,8 +6,7 @@ Font="\033[0m"
  
 # 内置配置
 GEOIP="cn"                 # 要封禁的国家代码
-START_PORT="1024"          # 起始端口
-END_PORT="65535"          # 结束端口
+BLOCKED_PORTS="1024:65535" # 要封禁的端口，支持单端口和连续端口混用，例如 "22,80,443,10000:11000"
 
 # IPv4 IP库地址
 GEOIP_IPV4_URL="http://www.ipdeny.com/ipblocks/data/countries/$GEOIP.zone"
@@ -18,8 +17,19 @@ GEOIP_IPV6_URL="https://www.ipdeny.com/ipv6/ipaddresses/blocks/$GEOIP.zone"
 check_ipset() {
     if ! command -v ipset &> /dev/null; then
         echo -e "${Green}正在安装ipset...${Font}"
-        apt-get update
-        apt-get install -y ipset
+        if command -v apt-get &> /dev/null; then
+            apt-get update
+            apt-get install -y ipset
+        elif command -v yum &> /dev/null; then
+            yum install -y ipset
+        elif command -v dnf &> /dev/null; then
+            dnf install -y ipset
+        elif command -v apk &> /dev/null; then
+            apk add ipset
+        else
+            echo -e "${Green}无法自动安装 ipset。请手动安装 ipset 后再运行脚本。${Font}"
+            exit 1
+        fi
     fi
 }
  
@@ -77,28 +87,28 @@ block_ipset(){
     # 添加 iptables (IPv4) 规则
     echo -e "${Green}正在添加iptables (IPv4) 封禁规则...${Font}"
     # 删除已存在的相同iptables规则（如果存在）
-    iptables -D INPUT -p tcp -m set --match-set "$GEOIP" src -m multiport --dports $START_PORT:$END_PORT -j DROP 2>/dev/null
-    iptables -D INPUT -p udp -m set --match-set "$GEOIP" src -m multiport --dports $START_PORT:$END_PORT -j DROP 2>/dev/null
+    iptables -D INPUT -p tcp -m set --match-set "$GEOIP" src -m multiport --dports $BLOCKED_PORTS -j DROP 2>/dev/null
+    iptables -D INPUT -p udp -m set --match-set "$GEOIP" src -m multiport --dports $BLOCKED_PORTS -j DROP 2>/dev/null
 
     # 添加新规则
-    iptables -I INPUT -p tcp -m set --match-set "$GEOIP" src -m multiport --dports $START_PORT:$END_PORT -j DROP
-    iptables -I INPUT -p udp -m set --match-set "$GEOIP" src -m multiport --dports $START_PORT:$END_PORT -j DROP
+    iptables -I INPUT -p tcp -m set --match-set "$GEOIP" src -m multiport --dports $BLOCKED_PORTS -j DROP
+    iptables -I INPUT -p udp -m set --match-set "$GEOIP" src -m multiport --dports $BLOCKED_PORTS -j DROP
     echo -e "${Green}iptables (IPv4) 封禁规则添加成功！${Font}"
 
     # 添加 ip6tables (IPv6) 规则 (如果下载成功)
     if [ "$IPV6_DOWNLOAD_SUCCESS" = true ]; then
         echo -e "${Green}正在添加ip6tables (IPv6) 封禁规则...${Font}"
         # 删除已存在的相同ip6tables规则（如果存在）
-        ip6tables -D INPUT -p tcp -m set --match-set "$GEOIP-ipv6" src -m multiport --dports $START_PORT:$END_PORT -j DROP 2>/dev/null
-        ip6tables -D INPUT -p udp -m set --match-set "$GEOIP-ipv6" src -m multiport --dports $START_PORT:$END_PORT -j DROP 2>/dev/null
+        ip6tables -D INPUT -p tcp -m set --match-set "$GEOIP-ipv6" src -m multiport --dports $BLOCKED_PORTS -j DROP 2>/dev/null
+        ip6tables -D INPUT -p udp -m set --match-set "$GEOIP-ipv6" src -m multiport --dports $BLOCKED_PORTS -j DROP 2>/dev/null
 
         # 添加新规则
-        ip6tables -I INPUT -p tcp -m set --match-set "$GEOIP-ipv6" src -m multiport --dports $START_PORT:$END_PORT -j DROP
-        ip6tables -I INPUT -p udp -m set --match-set "$GEOIP-ipv6" src -m multiport --dports $START_PORT:$END_PORT -j DROP
+        ip6tables -I INPUT -p tcp -m set --match-set "$GEOIP-ipv6" src -m multiport --dports $BLOCKED_PORTS -j DROP
+        ip6tables -I INPUT -p udp -m set --match-set "$GEOIP-ipv6" src -m multiport --dports $BLOCKED_PORTS -j DROP
         echo -e "${Green}ip6tables (IPv6) 封禁规则添加成功！${Font}"
     fi
 
-    echo -e "${Green}所指定国家($GEOIP)的IPv4和IPv6 ip在端口范围${START_PORT}-${END_PORT}内已封禁！${Font}"
+    echo -e "${Green}所指定国家($GEOIP)的IPv4和IPv6 ip在端口${BLOCKED_PORTS}内已封禁！${Font}"
 }
  
 # 执行封禁
