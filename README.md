@@ -1,7 +1,7 @@
 # block_ip.sh 使用说明
 
 `block_ip.sh` 是一个用于通过 ipset 和 iptables/ip6tables 封禁指定国家 IP 地址访问特定端口的脚本。
-修改自https://7li7li.com/archives/1139，感谢大佬的付出
+修改自https://7li7li.com/archives/1139 ，感谢大佬的付出
 
 ## 功能
 
@@ -14,18 +14,17 @@
 
 1.  下载脚本：
     ```bash
-    wget https://raw.githubusercontent.com/your_repo/your_branch/block_ip/block_ip.sh -O block_ip.sh
+    wget https://raw.githubusercontent.com/Seameee/block_ip/refs/heads/master/block_ip.sh -O /usr/local/bin/block_ip.sh
     ```
-    *(请将 `https://raw.githubusercontent.com/your_repo/your_branch/block_ip/block_ip.sh` 替换为脚本的实际下载地址)*
 
 2.  赋予脚本执行权限：
     ```bash
-    chmod +x block_ip.sh
+    chmod +x /usr/local/bin/block_ip.sh
     ```
 
 3.  运行脚本：
     ```bash
-    sudo ./block_ip.sh
+    sudo /usr/local/bin/block_ip.sh
     ```
     脚本需要 root 权限来安装 ipset 和修改 iptables/ip6tables 规则。
 
