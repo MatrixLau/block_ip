@@ -1,6 +1,7 @@
 # block_ip.sh 使用说明
 
 `block_ip.sh` 是一个用于通过 ipset 和 iptables/ip6tables 封禁指定国家 IP 地址访问特定端口的脚本。
+修改自https://7li7li.com/archives/1139，感谢大佬的付出
 
 ## 功能
 
