@@ -14,7 +14,7 @@
 
 1.  下载脚本：
     ```bash
-    wget https://raw.githubusercontent.com/Seameee/block_ip/refs/heads/master/block_ip.sh -O /usr/local/bin/block_ip.sh
+    wget https://raw.githubusercontent.com/MatrixLau/block_ip/refs/heads/master/block_ip.sh -O /usr/local/bin/block_ip.sh
     ```
 
 2.  赋予脚本执行权限：
